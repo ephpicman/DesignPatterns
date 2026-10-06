@@ -1,245 +1,126 @@
-# TD-PHP
+# Design Patterns in PHP
 
-TD-PHP is a **generic PHP project skeleton for test-driven development (TDD)**.
+A practical, test-driven reference for the **23 Gang of Four (GoF) design patterns**, implemented in PHP 8.2+ and backed by PHPUnit tests.
 
-The goal is simple: start a new PHP project with a conventional structure and the essential development-quality tooling already configured, so you can start writing tests and production code immediately.
+The purpose of this repository is educational: each pattern has a small, readable implementation, focused unit tests, and dedicated documentation explaining **what problem the pattern solves, how it works, when to use it, and what trade-offs it introduces**.
 
-TD-PHP is intentionally **not** a framework, CMS plugin, application, or domain-specific starter. It contains no WordPress integration and no frontend toolchain.
+## What is covered
 
-## What you get
+### Creational
 
-TD-PHP starts with four development tools:
+- [Abstract Factory](docs/AbstractFactory.md)
+- [Builder](docs/Builder.md)
+- [Factory Method](docs/FactoryMethod.md)
+- [Prototype](docs/Prototype.md)
+- [Singleton](docs/Singleton.md)
 
-- **PHPUnit** — automated tests.
-- **PHPStan** — static analysis.
-- **Psalm** — a second, independent static-analysis pass.
-- **PHP CS Fixer** — deterministic PHP formatting.
+### Structural
 
-They are already wired into Composer scripts, so the normal workflow is straightforward:
+- [Adapter](docs/Adapter.md)
+- [Bridge](docs/Bridge.md)
+- [Composite](docs/Composite.md)
+- [Decorator](docs/Decorator.md)
+- [Facade](docs/Facade.md)
+- [Flyweight](docs/Flyweight.md)
+- [Proxy](docs/Proxy.md)
+
+### Behavioural
+
+- [Chain of Responsibility](docs/ChainOfResponsibility.md)
+- [Command](docs/Command.md)
+- [Interpreter](docs/Interpreter.md)
+- [Iterator](docs/Iterator.md)
+- [Mediator](docs/Mediator.md)
+- [Memento](docs/Memento.md)
+- [Observer](docs/Observer.md)
+- [State](docs/State.md)
+- [Strategy](docs/Strategy.md)
+- [Template Method](docs/TemplateMethod.md)
+- [Visitor](docs/Visitor.md)
+
+## Repository structure
+
+Each pattern is deliberately isolated:
+
+```text
+src/
+└── PatternName/
+    └── Pattern.php
+
+tests/
+└── Unit/
+    └── PatternName/
+        └── PatternTest.php
+
+docs/
+└── PatternName.md
+```
+
+The source demonstrates the pattern. The PHPUnit test demonstrates its observable behaviour. The documentation explains the design behind it.
+
+## How to use this repository
+
+Clone the repository and install its development dependencies:
 
 ```bash
+git clone https://github.com/ephpicman/DesignPatterns.git
+cd DesignPatterns
 composer install
+```
+
+Run the complete verification suite:
+
+```bash
 composer check-all
 ```
 
-The skeleton targets **PHP 8.2+**.
-
-## Why this skeleton exists
-
-A new PHP project should not have to spend its first day deciding how to install PHPUnit, how to structure tests, how to run static analysis, or how to enforce formatting.
-
-TD-PHP provides that baseline from the beginning.
-
-It is designed for a workflow where tests are part of development rather than something added after the implementation:
-
-1. Write a failing test.
-2. Implement the smallest change that makes it pass.
-3. Refactor while keeping the test suite green.
-4. Run static analysis and formatting checks.
-5. Repeat.
-
-The repository does not try to prescribe an application architecture. It gives you the development foundation and leaves the domain design to the project.
-
-## Requirements
-
-- PHP 8.2 or newer.
-- Composer 2.x.
-
-Install dependencies:
-
-```bash
-composer install
-```
-
-## Customising the skeleton
-
-TD-PHP is a starting point, not a fixed architecture. After copying or using the skeleton for a real project, review these configuration points.
-
-| Area | Where | What you can change |
-| --- | --- | --- |
-| Project identity | `composer.json` | Package name, description, keywords, homepage, and authors. |
-| PHP version | `composer.json` | Change the `php` constraint to the versions your project supports. |
-| Namespace | `composer.json` | Replace `App\\` with your project's production namespace. |
-| Test namespace | `composer.json` | Replace `Tests\\` if your test namespace follows a different convention. |
-| Dependencies | `composer.json` | Add the runtime and development packages your project actually needs. |
-| Test layout | `phpunit.xml` | Change the test-suite directories or add additional suites. |
-| PHPStan scope/level | `phpstan.neon` | Change analysed paths and the analysis level to match the project. |
-| Psalm scope/strictness | `psalm.xml` | Change analysed directories and error level as the project evolves. |
-| Formatting rules | `.php-cs-fixer.dist.php` | Adjust the fixer rules and directories to match the project's coding standard. |
-| Coverage | `composer.json` / PHPUnit config | Keep coverage diagnostic, or add a project-specific coverage policy if one is justified. |
-| CI PHP versions | `.github/workflows/ci.yml` | Change the supported PHP matrix and the PHP version used for quality checks. |
-| CI checks | `.github/workflows/ci.yml` | Add, remove, or split jobs when the project's verification requirements change. |
-
-### Namespace and package identity
-
-The skeleton uses:
-
-```text
-App\\ => src/
-Tests\\ => tests/
-```
-
-For a real project, replace these placeholders with the project's actual namespaces and update the corresponding directories if necessary.
-
-### Static-analysis strictness
-
-PHPStan starts at level 8 and analyses `src/`. Psalm analyses both `src/` and `tests/` because PHPUnit discovers test classes at runtime and they are still useful to analyse.
-
-If a project needs a different balance between adoption effort and strictness, adjust the analyser configuration deliberately. Prefer fixing real findings over adding broad suppressions.
-
-### Formatting policy
-
-PHP CS Fixer provides the repository's baseline formatting rules. Projects can change the rule set, allow or forbid risky rules, and change which directories are formatted.
-
-Keep formatting changes intentional: the skeleton should enforce a consistent policy, not continually rewrite unrelated code.
-
-### CI matrix and quality gate
-
-The CI workflow currently tests PHPUnit against PHP 8.2 through 8.5 and runs static analysis and formatting checks on PHP 8.5.
-
-If your project supports a different PHP range, update the matrix accordingly. If a tool has compatibility requirements that differ from the runtime matrix, keep those concerns explicit rather than silently relying on one PHP version.
-
-## Development commands
-
-### Run tests
+Or run individual checks:
 
 ```bash
 composer test
-```
-
-### Run tests with HTML coverage
-
-```bash
-composer test:coverage
-```
-
-The report is generated under `build/coverage/`.
-
-Coverage is provided as a diagnostic tool. TD-PHP does not impose an arbitrary coverage percentage: meaningful tests matter more than maximising a number.
-
-### Run PHPStan
-
-```bash
 composer analyze:phpstan
-```
-
-PHPStan analyses the production source tree.
-
-### Run Psalm
-
-```bash
 composer analyze:psalm
-```
-
-Psalm provides an independent static-analysis pass over the production and test source trees.
-
-### Check formatting
-
-Without modifying files:
-
-```bash
 composer format:check
 ```
 
-Apply formatting:
+## How to study a pattern
 
-```bash
-composer format
-```
+Do not start by memorising class diagrams. For each pattern, use this order:
 
-### Run the complete quality gate
+1. Read the **problem** it addresses.
+2. Understand the **forces and constraints** that make the problem difficult.
+3. Read the implementation in `src/`.
+4. Read the unit test and identify the behaviour being protected.
+5. Read the documentation's **when to use** and **trade-offs** sections.
+6. Try to explain how you would solve the same problem without the pattern.
+7. Only then compare that solution with the pattern.
 
-```bash
-composer check-all
-```
+The goal is not to use more patterns. The goal is to recognise recurring design problems and choose the simplest appropriate solution.
 
-This runs, in order:
+## Testing philosophy
 
-1. PHP CS Fixer verification.
-2. PHPStan.
-3. Psalm.
-4. PHPUnit.
+Every pattern has a dedicated PHPUnit test. The tests are intentionally focused on externally observable behaviour rather than implementation details.
 
-The verification command does not rewrite source files.
+A passing test suite does not prove that a pattern is appropriate for a real system. It proves that the example implementation behaves as documented.
 
-## Project structure
+## PHP version and tooling
 
-```text
-.
-├── src/
-│   └── Example.php
-├── tests/
-│   └── Unit/
-│       └── ExampleTest.php
-├── .editorconfig
-├── .gitignore
-├── .php-cs-fixer.dist.php
-├── composer.json
-├── composer.lock
-├── phpstan.neon
-├── phpunit.xml
-├── psalm.xml
-├── CONTRIBUTING.md
-├── LICENSE
-└── README.md
-```
+The project targets **PHP 8.2+** and uses a small, conventional quality toolchain:
 
-### Source code
+- **PHPUnit** — unit tests.
+- **PHPStan** — static analysis.
+- **Psalm** — independent static analysis.
+- **PHP CS Fixer** — formatting.
 
-Production PHP belongs under `src/`.
+The repository deliberately avoids unrelated framework integrations and niche tooling. It is a focused design-pattern reference, not a general-purpose PHP starter kit.
 
-The Composer autoloader uses the placeholder namespace:
+## Important scope note
 
-```text
-App\\ => src/
-```
-
-When starting a real project, replace `App\\` with the project's actual namespace and package name.
-
-### Tests
-
-Tests belong under `tests/`.
-
-The example test lives under `tests/Unit/` to establish a conventional starting point. As a project grows, additional test categories can be introduced where they are justified, for example:
-
-```text
-tests/
-├── Unit/
-├── Integration/
-└── Functional/
-```
-
-Do not create test categories just for the sake of having directories. The test structure should follow the system being tested.
-
-## TDD starting point
-
-The repository includes one deliberately small example:
-
-- `src/Example.php` contains a minimal class.
-- `tests/Unit/ExampleTest.php` tests its observable behaviour.
-
-The example exists to prove that the skeleton works immediately after installation and to show where production code and tests belong. It is not intended to be an application architecture.
-
-For a real project, replace or remove the example and begin with the behaviour you actually need.
-
-## Tooling policy
-
-TD-PHP deliberately starts with four tools and keeps their responsibilities separate:
-
-| Tool | Responsibility |
-| --- | --- |
-| PHPUnit | Tests and test execution |
-| PHPStan | Static analysis |
-| Psalm | Independent static analysis |
-| PHP CS Fixer | Formatting |
-
-No frontend tooling, WordPress-specific tooling, framework, test runner, mutation-testing system, or additional analysis framework is required by the baseline.
-
-The purpose is not to maximise the number of tools. The purpose is to make a new PHP codebase testable and maintainable from its first commit.
+This repository covers the **23 classic Gang of Four patterns**. It does not claim that GoF is the complete universe of useful software patterns. Application architecture, enterprise integration, concurrency, domain-driven design, and language-specific idioms contain other patterns, but adding them would be a separate scope and should not be confused with the canonical GoF catalogue.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the development and verification workflow.
+Contributions should improve the educational value or correctness of the reference. Prefer small, focused changes. New examples should be justified by a real learning gap rather than added merely to increase the number of files.
 
 Before submitting a change:
 
@@ -247,6 +128,8 @@ Before submitting a change:
 composer check-all
 ```
 
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## License
 
-TD-PHP is licensed under the MIT License. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
